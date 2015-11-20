@@ -5,6 +5,7 @@ __author__ = 'davinellulinvega'
 import Network
 from sphero_driver import sphero_driver
 import ast
+import math
 
 
 class Sphero(sphero_driver.Sphero):
@@ -54,6 +55,22 @@ class Sphero(sphero_driver.Sphero):
         self._collided = True
         # And record the position
         self._collision_pos.add((data['X'], data['Y'], data['Z']))
+
+    def check_collision_status(self, speed_thres):
+        """
+        If the robot collided with an object of large proportions, this function checks that the robot is not in contact
+        with the object any more, relying on the speed of the robot.
+        :param speed_thres: an integer between 0 and 255. If the overall speed of the robot is greater than this
+        threshold, it is considered not in contact with an object any more.
+        :return: Nothing
+        """
+
+        # Compute the overall speed of the robot
+        speed = math.sqrt((self._speed_x**2 + self._speed_y**2))
+
+        # Check if the robot previously collided with something and has a speed over the threshold
+        if self._collided and speed > speed_thres:
+            self._collided = False
 
     def on_position_speed(self, data):
         """
