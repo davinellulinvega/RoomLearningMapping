@@ -4,8 +4,10 @@ __author__ = 'davinellulinvega'
 
 import Network
 from sphero_driver import sphero_driver
+import ast
 
-class Sphero(sphero_driver):
+
+class Sphero(sphero_driver.Sphero):
     """Define a child class Sphero extending the capabilities of the sphero_driver and
      initializing the instance for our purpose"""
 
@@ -24,13 +26,18 @@ class Sphero(sphero_driver):
         self._collided = False
         self._collision_pos = set()
 
+        # Initialize the set of collision positions
+        self.load_collision_pos()
+
         # Define the actor and critic
         self._actor = Network.Network(3, [10, 10], 2)
         self._critic = Network.Network(3, [10, 10], 1)
 
         # Configure the collision detection and data streaming
         self.config_collision_detect(0x01, (0xff / 7), 0x00, (0xff / 7), 0x00, 0x01, False)
-        self.set_data_strm(15, 1, 0, 0, sphero_driver.STRM_MASK2['VELOCITY_X'] | sphero_driver.STRM_MASK2['VELOCITY_Y'] | sphero_driver.STRM_MASK2['ODOM_X'] | sphero_driver.STRM_MASK2['ODOM_Y'], False)
+        self.set_data_strm(15, 1, 0, 0,
+                           sphero_driver.STRM_MASK2['VELOCITY_X'] | sphero_driver.STRM_MASK2['VELOCITY_Y'] |
+                           sphero_driver.STRM_MASK2['ODOM_X'] | sphero_driver.STRM_MASK2['ODOM_Y'], False)
 
         # Set power notification as well (0x00: disable, 0x01: enable)
         self.set_power_notify(0x01, False)
@@ -81,3 +88,25 @@ class Sphero(sphero_driver):
         with open("Data/collision_position.dat", "w") as dat_file:
             for elem in self._collision_pos:
                 dat_file.write(str(elem) + "\n")
+
+    def load_collision_pos(self):
+        """
+        A Simple function that loads the positions of the previously recorded collision
+        :return: Nothing
+        """
+
+        try:
+            # Open the pre-defined file
+            with open("Data/collision_position.dat", "r") as dat_file:
+                # Read a line
+                lines = dat_file.readlines()
+                # Convert each line into a tuple and insert it into the set
+                for str_line in lines:
+                    line = ast.literal_eval(str_line)
+                    self._collision_pos.add(line)
+        except IOError:
+            print("No previously recorded data on positions for collision")
+
+
+if __name__ == "__main__":
+    sphero = Sphero()
