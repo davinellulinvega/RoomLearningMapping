@@ -34,7 +34,7 @@ class Sphero(sphero_driver.Sphero):
         self._speed_x = 0
         self._speed_y = 0
         self._power = 2
-        self._collided = False
+        self._collided = -1  # False = -1 and True = 1
         self._collision_pos = set()
 
         # Initialize the set of collision positions
@@ -84,7 +84,7 @@ class Sphero(sphero_driver.Sphero):
         """
 
         # Simply set the collided member to True
-        self._collided = True
+        self._collided = 1
         # And record the position
         self._collision_pos.add((data['X'], data['Y'], data['Z']))
 
@@ -101,8 +101,8 @@ class Sphero(sphero_driver.Sphero):
         speed = math.sqrt((self._speed_x**2 + self._speed_y**2))
 
         # Check if the robot previously collided with something and has a speed over the threshold
-        if self._collided and speed > speed_thres:
-            self._collided = False
+        if self._collided == 1 and speed > speed_thres:
+            self._collided = -1
 
     def on_position_speed(self, data):
         """
@@ -233,9 +233,25 @@ class Sphero(sphero_driver.Sphero):
         A getter for the collision status
         :return: True a collision happened, False otherwise
         """
-        return self._collided
+        if self._collided == 1:
+            return True
+        else:
+            return False
 
-    def learn(self):
+    def get_state_value(self):
+        """
+        Activate the critic and return its output as the value for the state.
+        :return: A float in the range [-1, 1]
+        """
+
+        # Activate the critic
+        self._critic.activate([self._x, self._y, self._collided])
+        # Get the output
+        output = self._critic.get_output()
+        # Finally return the state's value
+        return output[0]
+
+    def learn(self, learning_rate, error):
 
 
     def get_roll_params(self, max_speed=255):
@@ -245,10 +261,7 @@ class Sphero(sphero_driver.Sphero):
         """
 
         # Activate the actor
-        if self._collided:
-            self._actor.activate([self._x, self._y, 1])
-        else:
-            self._actor.activate([self._x, self._y, -1])
+        self._actor.activate([self._x, self._y, self._collided])
 
         # Get the parameters for the roll
         outputs = self._actor.get_output()  # outputs are in the range [-1; 1]
