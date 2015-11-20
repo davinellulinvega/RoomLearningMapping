@@ -221,6 +221,13 @@ class Sphero(sphero_driver.Sphero):
             # Wait for all threads to terminate
             self.join(timeout)
 
+    def get_power_status(self):
+        """
+        A getter for the power status
+        :return: An int representing the power status. 1: charging, 2: Ok, 3: Low, 4: Critical
+        """
+        return self._power
+
 
 if __name__ == "__main__":
     # Create an instance of the Sphero class
