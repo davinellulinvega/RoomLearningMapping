@@ -7,6 +7,7 @@ from sphero_driver import sphero_driver
 import ast
 import math
 from pickle import Pickler
+from pickle import Unpickler
 
 
 class Sphero(sphero_driver.Sphero):
@@ -153,6 +154,34 @@ class Sphero(sphero_driver.Sphero):
         with open("Config/critic.cfg", "wb") as cfg_file:
             pickle = Pickler(cfg_file)
             pickle.dump(self._critic)
+
+    def load_brain(self):
+        """
+        Load the actor and critic's configurations from the corresponding files.
+        :return: True if configuration loaded, False otherwise
+        """
+
+        try:
+            # Open the file
+            with open("Config/actor.cfg", "rb") as cfg_file:
+                # Instantiate an Unpickler
+                unpickle = Unpickler(cfg_file)
+                # Load the object
+                self._actor = unpickle.load()
+
+            # Repeat the operation for the actor
+            with open("Config/critic.cfg", "rb") as cfg_file:
+                unpickle = Unpickler(cfg_file)
+                self._critic = unpickle.load()
+
+            # Return True because everything up to this point went well
+            return True
+
+        except IOError as error:
+            # Display a message detailing the error
+            print("An error occurred while loading the actor and critic: Error {}: {}".format(error.errno, error.strerror))
+            # Return False to warn that something bad happened, leaving the actor and critic in an unknown state
+            return False
 
 
 if __name__ == "__main__":
