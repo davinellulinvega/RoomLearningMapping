@@ -13,8 +13,15 @@ from pickle import Unpickler
 class Sphero(sphero_driver.Sphero):
     """Define a child class Sphero extending the capabilities of the sphero_driver.Sphero"""
 
-    def __init__(self):
-        """Initialize the parent class and extend the object with members"""
+    def __init__(self, reload_brain=False, hid_act=[], hid_crit=[]):
+        """
+        Extend the parent Class with some members, initialize them and return an instance of the Sphero class
+        :param reload_brain: Whether to reload the actor and critic from the configuration files or not.
+        True: reload, False: forget it
+        :param hid_act: A list describing the number of neurons to implement for each hidden layer in the actor
+        :param hid_crit: A list describing the number of neurons to implement for each hidden layer in the critic
+        :return: An initialized instance of the class Sphero
+        """
 
         # Initialize the parent class
         sphero_driver.Sphero.__init__(self, target_addr="68:86:E7:06:30:CB")
@@ -30,9 +37,18 @@ class Sphero(sphero_driver.Sphero):
         # Initialize the set of collision positions
         self.load_collision_pos()
 
-        # Define the actor and critic
-        self._actor = Network.Network(3, [10, 10], 2)
-        self._critic = Network.Network(3, [10, 10], 1)
+        # Initialize the actor and critic
+        self._actor = None
+        self._critic = None
+        loaded = True
+        # If required from the configuration files
+        if reload_brain:
+            loaded = self.load_brain()
+
+        # If not required or if reading the configuration files failed
+        if not reload_brain or not loaded:
+            self._actor = Network.Network(3, [10, 10], 2)
+            self._critic = Network.Network(3, [10, 10], 1)
 
     def configure(self):
         """
