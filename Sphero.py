@@ -204,13 +204,16 @@ class Sphero(sphero_driver.Sphero):
 
     def shutdown(self, timeout=None):
         """
-        A simple method that will disconnect from the robot and wait for all thread to terminate
+        A simple method that will disconnect from the robot, record the brain's configuration
+         and wait for all thread to terminate
         :param timeout: the time to wait for all thread to terminate. Defaults to None, meaning wait forever
         :return: Nothing
         """
 
         # Disconnect from the robot
         self.disconnect()
+        # Record the brain's configuration
+        self.dump_brain()
         # Check that more than one thread is running to avoid a runtimeError
         if threading.activeCount() > 0:
             # Wait for all threads to terminate
