@@ -22,6 +22,7 @@ class Sphero(sphero_driver):
         self._speed_y = 0
         self._power = 2
         self._collided = False
+        self._collision_pos = set()
 
         # Define the actor and critic
         self._actor = Network.Network(3, [10, 10], 2)
@@ -34,8 +35,19 @@ class Sphero(sphero_driver):
         # Set power notification as well (0x00: disable, 0x01: enable)
         self.set_power_notify(0x01, False)
 
-    def on_collision(self):
+    def on_collision(self, data):
+        """
+        This function is a callback for the collision detected event and only changes the value of the collided member
+        And record the position of the collision for mapping purposes
+        :param data: Information on the magnitude and speed of the collision on each axis
+        :return: Nothing
+        """
 
-    def on_position(self):
+        # Simply set the collided member to True
+        self._collided = True
+        # And record the position
+        self._collision_pos.add((data['X'], data['Y'], data['Z']))
+
+    def on_position_speed(self):
 
     def on_power_notify(self):
