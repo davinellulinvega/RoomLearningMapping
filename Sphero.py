@@ -270,11 +270,10 @@ class Sphero(sphero_driver.Sphero):
         self._actor.learn(error)
         self._critic.learn(error)
 
-
     def get_roll_params(self, max_speed=255):
         """
         Activate the actor and return the speed and heading for the next roll
-        
+        :param max_speed: The maximal speed at which sphero can roll
         :return: A tuple: (speed, heading)
         """
 
