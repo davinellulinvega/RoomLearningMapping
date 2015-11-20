@@ -8,6 +8,7 @@ import ast
 import math
 from pickle import Pickler
 from pickle import Unpickler
+import threading
 
 
 class Sphero(sphero_driver.Sphero):
@@ -200,6 +201,20 @@ class Sphero(sphero_driver.Sphero):
             print("An error occurred while loading the actor and critic: Error {}: {}".format(error.errno, error.strerror))
             # Return False to warn that something bad happened, leaving the actor and critic in an unknown state
             return False
+
+    def shutdown(self, timeout=None):
+        """
+        A simple method that will disconnect from the robot and wait for all thread to terminate
+        :param timeout: the time to wait for all thread to terminate. Defaults to None, meaning wait forever
+        :return: Nothing
+        """
+
+        # Disconnect from the robot
+        self.disconnect()
+        # Check that more than one thread is running to avoid a runtimeError
+        if threading.activeCount() > 0:
+            # Wait for all threads to terminate
+            self.join(timeout)
 
 
 if __name__ == "__main__":
