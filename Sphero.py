@@ -62,7 +62,7 @@ class Sphero(sphero_driver.Sphero):
         # Check that the robot is connected before anything
         if self.is_connected:
             # Configure the collision detection and data streaming
-            self.config_collision_detect(0x01, (0xff / 7), 0x00, (0xff / 7), 0x00, 0x01, False)
+            self.config_collision_detect(0x01, (0xff / 8), 0x00, (0xff / 8), 0x00, 0x01, False)
             self.set_data_strm(15, 1, 0, 0,
                                sphero_driver.STRM_MASK2['VELOCITY_X'] | sphero_driver.STRM_MASK2['VELOCITY_Y'] |
                                sphero_driver.STRM_MASK2['ODOM_X'] | sphero_driver.STRM_MASK2['ODOM_Y'], False)
