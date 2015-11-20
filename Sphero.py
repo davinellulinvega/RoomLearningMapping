@@ -1,4 +1,4 @@
-#!/usr/bin/pyhton
+#!/usr/bin/python
 # -*- coding: UTF-8 -*-
 __author__ = 'davinellulinvega'
 
@@ -9,12 +9,10 @@ import math
 
 
 class Sphero(sphero_driver.Sphero):
-    """Define a child class Sphero extending the capabilities of the sphero_driver and
-     initializing the instance for our purpose"""
+    """Define a child class Sphero extending the capabilities of the sphero_driver.Sphero"""
 
     def __init__(self):
-        """Initialize the parent class, extend the object with members and
-         configure the data steaming and collision detection"""
+        """Initialize the parent class and extend the object with members"""
 
         # Initialize the parent class
         sphero_driver.Sphero.__init__(self)
@@ -34,14 +32,27 @@ class Sphero(sphero_driver.Sphero):
         self._actor = Network.Network(3, [10, 10], 2)
         self._critic = Network.Network(3, [10, 10], 1)
 
-        # Configure the collision detection and data streaming
-        self.config_collision_detect(0x01, (0xff / 7), 0x00, (0xff / 7), 0x00, 0x01, False)
-        self.set_data_strm(15, 1, 0, 0,
-                           sphero_driver.STRM_MASK2['VELOCITY_X'] | sphero_driver.STRM_MASK2['VELOCITY_Y'] |
-                           sphero_driver.STRM_MASK2['ODOM_X'] | sphero_driver.STRM_MASK2['ODOM_Y'], False)
+    def configure(self):
+        """
+        Configure the the data streaming, collision detection and power notification
+        :return: Nothing
+        """
 
-        # Set power notification as well (0x00: disable, 0x01: enable)
-        self.set_power_notify(0x01, False)
+        # Check that the robot is connected before anything
+        if self.is_connected:
+            # Configure the collision detection and data streaming
+            self.config_collision_detect(0x01, (0xff / 7), 0x00, (0xff / 7), 0x00, 0x01, False)
+            self.set_data_strm(15, 1, 0, 0,
+                               sphero_driver.STRM_MASK2['VELOCITY_X'] | sphero_driver.STRM_MASK2['VELOCITY_Y'] |
+                               sphero_driver.STRM_MASK2['ODOM_X'] | sphero_driver.STRM_MASK2['ODOM_Y'], False)
+
+            # Set power notification as well (0x00: disable, 0x01: enable)
+            self.set_power_notify(0x01, False)
+
+            # Add the different callbacks to the processing of their respective data
+            self.add_async_callback(sphero_driver.IDCODE['DATA_STRM'], self.on_position_speed)
+            self.add_async_callback(sphero_driver.IDCODE['COLLISION'], self.on_collision)
+            self.add_async_callback(sphero_driver.IDCODE['PWR_NOTIFY'], self.on_power_notify)
 
     def on_collision(self, data):
         """
@@ -126,4 +137,18 @@ class Sphero(sphero_driver.Sphero):
 
 
 if __name__ == "__main__":
+    # Create an instance of the Sphero class
     sphero = Sphero()
+    # Connect to the robot
+    sphero.connect()
+    # Configure the robot
+    sphero.configure()
+    # Start a new thread for processing asynchronous data
+    sphero.start()
+
+    # Your tests here
+
+    # Disconnect from the robot (aka close the bluetooth socket)
+    sphero.disconnect()
+    # Wait for all processes to finish
+    sphero.join()
