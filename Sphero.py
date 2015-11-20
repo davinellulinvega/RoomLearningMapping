@@ -36,6 +36,7 @@ class Sphero(sphero_driver.Sphero):
         self._power = 2
         self._collided = -1  # False = -1 and True = 1
         self._collision_pos = set()
+        self._path_length = 0
 
         # Initialize the set of collision positions
         self.load_collision_pos()
@@ -114,11 +115,18 @@ class Sphero(sphero_driver.Sphero):
         :return: Nothing
         """
 
+        # Record the old position
+        x_old = self._x
+        y_old = self._y
+
         # Simply assign the values to the corresponding members
         self._x = data['ODOM_X']
         self._y = data['ODOM_Y']
         self._speed_x = data['VELOCITY_X']
         self._speed_y = data['VELOCITY_Y']
+
+        # Compute the path length
+        self._path_length += math.sqrt((self._x - x_old)**2 + (self._y - y_old)**2)
 
     def on_power_notify(self, data):
         """
@@ -255,11 +263,15 @@ class Sphero(sphero_driver.Sphero):
         :return: Nothing
         """
 
-        # Compute the error
+        # Compute the punishment
         if self._collided == 1:
-            error = -5 + discount * state_n - state_o
-        else:
-            error = discount * state_n - state_o
+            punishment = -5
+
+        # Compute the reward
+        reward = self._path_length
+
+        # Compute the error
+        error = (reward - punishment) + discount * state_n - state_o
 
         # Have the actor and critic learn
         self._actor.learn([error, error])
