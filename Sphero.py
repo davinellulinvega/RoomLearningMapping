@@ -49,8 +49,8 @@ class Sphero(sphero_driver.Sphero):
 
         # If not required or if reading the configuration files failed
         if not reload_brain or not loaded:
-            self._actor = Network.Network(3, [10, 10], 2)
-            self._critic = Network.Network(3, [10, 10], 1)
+            self._actor = Network.Network(3, hid_act, 2)
+            self._critic = Network.Network(3, hid_crit, 1)
 
     def configure(self):
         """
