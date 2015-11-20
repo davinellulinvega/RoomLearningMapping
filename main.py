@@ -47,7 +47,7 @@ try:
     sphero.unload()
 
 except KeyboardInterrupt:
-    print("The user has requested the program to stop.\nStopping the program ...")
+    print("\nThe user has requested the program to stop.\nStopping the program ...")
     # Shut sphero down
     sphero.unload()
 
