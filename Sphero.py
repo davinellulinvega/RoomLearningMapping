@@ -71,3 +71,13 @@ class Sphero(sphero_driver):
         # Assign the data to the power member
         self._power = data['STATE']
 
+    def dump_collision_pos(self):
+        """
+        A simple function that writes the positions of the collisions in a file
+        :return: Nothing
+        """
+
+        # Just open a file in write mode and dump all the data
+        with open("Data/collision_position.dat", "w") as dat_file:
+            for elem in self._collision_pos:
+                dat_file.write(str(elem) + "\n")
