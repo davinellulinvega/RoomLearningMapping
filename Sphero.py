@@ -13,13 +13,15 @@ from pickle import Unpickler
 class Sphero(sphero_driver.Sphero):
     """Define a child class Sphero extending the capabilities of the sphero_driver.Sphero"""
 
-    def __init__(self, reload_brain=False, hid_act=[], hid_crit=[]):
+    def __init__(self, reload_brain=False, hid_act=[1], hid_crit=[1]):
         """
         Extend the parent Class with some members, initialize them and return an instance of the Sphero class
         :param reload_brain: Whether to reload the actor and critic from the configuration files or not.
-        True: reload, False: forget it
+        True: reload, False: forget it (default)
         :param hid_act: A list describing the number of neurons to implement for each hidden layer in the actor
+        Defaults to one hidden layer with one neuron.
         :param hid_crit: A list describing the number of neurons to implement for each hidden layer in the critic
+        Defaults to one hidden layer with one neuron.
         :return: An initialized instance of the class Sphero
         """
 
