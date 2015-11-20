@@ -22,13 +22,22 @@ try:
 
     # While the sphero robot does not need to be plugged in
     while power < 4:
+        # Get the value of the present state
+        state_o = sphero.get_state_value()
+
         # Get the parameters for the next roll
         speed, heading = sphero.get_roll_params(255 / 4)
         # Roll according to the parameters
         sphero.roll(speed, heading, 0x01, False)  # The third parameter is the state: 0x00->breaking, 0x01->driving
+
         # Check if the robot is still colliding with an object
         sphero.check_collision_status(10)
 
+        # Get the value of the new state
+        state_n = sphero.get_state_value()
+
+        # Have the actor and the critic learn
+        sphero.learn(state_n, state_o, 0.7)
 
         # Query the power status
         power = sphero.get_power_status()
