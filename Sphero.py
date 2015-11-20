@@ -3,7 +3,7 @@
 __author__ = 'davinellulinvega'
 
 import Network
-from sphero_driver import sphero_driver
+import sphero_driver
 import ast
 import math
 from pickle import Pickler
@@ -128,7 +128,7 @@ class Sphero(sphero_driver.Sphero):
         """
 
         # Assign the data to the power member
-        self._power = data['STATE']
+        self._power = data
 
     def dump_collision_pos(self):
         """
@@ -205,7 +205,7 @@ class Sphero(sphero_driver.Sphero):
             # Return False to warn that something bad happened, leaving the actor and critic in an unknown state
             return False
 
-    def shutdown(self, timeout=None):
+    def unload(self, timeout=None):
         """
         A simple method that will disconnect from the robot, record the brain's configuration, dumps the collision data
          and wait for all thread to terminate
@@ -262,8 +262,8 @@ class Sphero(sphero_driver.Sphero):
             error = discount * state_n - state_o
 
         # Have the actor and critic learn
-        self._actor.learn(error)
-        self._critic.learn(error)
+        self._actor.learn([error, error])
+        self._critic.learn([error])
 
     def get_roll_params(self, max_speed=255):
         """
@@ -281,7 +281,7 @@ class Sphero(sphero_driver.Sphero):
         heading = (359 / 2) + (outputs[1] * (359/2))  # 359 is the maximum heading possible
 
         # Return the formatted parameters
-        return speed, heading
+        return int(speed), int(heading)
 
 
 if __name__ == "__main__":

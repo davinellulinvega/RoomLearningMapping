@@ -44,12 +44,12 @@ try:
 
     # Shut the robot down
     print("Sphero feels a bit tired.\nShutting down ...")
-    sphero.shutdown()
+    sphero.unload()
 
 except KeyboardInterrupt:
     print("The user has requested the program to stop.\nStopping the program ...")
     # Shut sphero down
-    sphero.shutdown()
+    sphero.unload()
 
 # Exit the program with a little message
 print("Goodbye !!! Hope to see you again soon!!!")
