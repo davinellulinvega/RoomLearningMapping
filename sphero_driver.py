@@ -203,7 +203,7 @@ class BTInterface(object):
       self.sock=bluetooth.BluetoothSocket(bluetooth.RFCOMM)
       self.sock.connect((self.target_address,self.port))
     except bluetooth.btcommon.BluetoothError as error:
-      sys.stdout.write(error.strerror)
+      sys.stdout.write(error.message)
       sys.stdout.flush()
       time.sleep(5.0)
       sys.exit(1)
