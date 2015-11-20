@@ -20,6 +20,8 @@ class Sphero(sphero_driver):
         self._y = 0
         self._speed_x = 0
         self._speed_y = 0
+        self._power = 2
+        self._collided = False
 
         # Define the actor and critic
         self._actor = Network.Network(3, [10, 10], 2)
@@ -27,6 +29,7 @@ class Sphero(sphero_driver):
 
         # Configure the collision detection and data streaming
         self.config_collision_detection(0x01, (0xff / 7), 0x00, (0xff / 7), 0x00, 0x01, False)
+        # TODO: Replace with a data stream for odometer and speed only
         self.set_all_data_strm(15, 1, 0, False)
 
     def on_collision(self):
