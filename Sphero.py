@@ -50,7 +50,7 @@ class Sphero(sphero_driver.Sphero):
             loaded = self.load_brain()
 
         # If not required or if reading the configuration files failed
-        if not reload_brain or not loaded:
+        if not (reload_brain and loaded):
             self._actor = Network.Network(3, hid_act, 2)
             self._critic = Network.Network(3, hid_crit, 1)
 
