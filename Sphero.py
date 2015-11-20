@@ -228,16 +228,6 @@ class Sphero(sphero_driver.Sphero):
         """
         return self._power
 
-    def collided(self):
-        """
-        A getter for the collision status
-        :return: True a collision happened, False otherwise
-        """
-        if self._collided == 1:
-            return True
-        else:
-            return False
-
     def get_state_value(self):
         """
         Activate the critic and return its output as the value for the state.
