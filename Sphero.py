@@ -61,4 +61,13 @@ class Sphero(sphero_driver):
         self._speed_x = data['VELOCITY_X']
         self._speed_y = data['VELOCITY_Y']
 
-    def on_power_notify(self):
+    def on_power_notify(self, data):
+        """
+        This function is a callback for the power notification and simply assign the requested data to the power member
+        :param data: A dictionary containing the power information
+        :return: Nothing
+        """
+
+        # Assign the data to the power member
+        self._power = data['STATE']
+
