@@ -17,7 +17,7 @@ class Synapse:
 		self.weight = uniform(-1, 1)
 		#Keep a record of the previous delta, to compute the momentum
 		self.prev_delta = 0
-		self.eta = 0.1  # 0.0001
+		self.eta = 0.01  # 0.0001
 		self.epsylon = 0.7
 		#Check if neuron_in is an instance of Neuron
 		if not(isinstance(neuron_in, Neuron.Neuron)):
