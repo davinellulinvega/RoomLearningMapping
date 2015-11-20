@@ -75,6 +75,9 @@ class Sphero(sphero_driver.Sphero):
             self.add_async_callback(sphero_driver.IDCODE['COLLISION'], self.on_collision)
             self.add_async_callback(sphero_driver.IDCODE['PWR_NOTIFY'], self.on_power_notify)
 
+            # Switch the back led on
+            self.set_back_led(255, False)
+
     def on_collision(self, data):
         """
         This function is a callback for the collision detected event and only changes the value of the collided member
@@ -210,6 +213,8 @@ class Sphero(sphero_driver.Sphero):
         :return: Nothing
         """
 
+        # Switch the back led off
+        self.set_back_led(0, False)
         # Disconnect from the robot
         self.disconnect()
         # Record the brain's configuration
