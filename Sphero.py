@@ -228,6 +228,36 @@ class Sphero(sphero_driver.Sphero):
         """
         return self._power
 
+    def collided(self):
+        """
+        A getter for the collision status
+        :return: True a collision happened, False otherwise
+        """
+        return self._collided
+
+    def learn(self):
+
+
+    def get_roll_params(self, max_speed=255):
+        """
+        Activate the actor and return the speed and heading for the next roll
+        :return: A tuple: (speed, heading)
+        """
+
+        # Activate the actor
+        if self._collided:
+            self._actor.activate([self._x, self._y, 1])
+        else:
+            self._actor.activate([self._x, self._y, -1])
+
+        # Get the parameters for the roll
+        outputs = self._actor.get_output()  # outputs are in the range [-1; 1]
+        speed = (max_speed / 2) + (outputs[0] * (max_speed / 2))  # With output=1 -> max_speed, with output=-1 -> 0
+        heading = (359 / 2) + (outputs[1] * (359/2))  # 359 is the maximum heading possible
+
+        # Return the formatted parameters
+        return speed, heading
+
 
 if __name__ == "__main__":
     # Create an instance of the Sphero class
