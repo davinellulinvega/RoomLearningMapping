@@ -15,7 +15,7 @@ class Sphero(sphero_driver.Sphero):
         """Initialize the parent class and extend the object with members"""
 
         # Initialize the parent class
-        sphero_driver.Sphero.__init__(self)
+        sphero_driver.Sphero.__init__(self, target_addr="68:86:E7:06:30:CB")
         # Members
         self._x = 0
         self._y = 0
