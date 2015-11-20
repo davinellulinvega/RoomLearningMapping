@@ -251,12 +251,30 @@ class Sphero(sphero_driver.Sphero):
         # Finally return the state's value
         return output[0]
 
-    def learn(self, learning_rate, error):
+    def learn(self, state_n, state_o, discount):
+        """
+        Compute the error depending on the collision status and have the actor and critic learn
+        :param state_n: the value of the new state
+        :param state_o: the value of the old state
+        :param discount: the discount rate
+        :return: Nothing
+        """
+
+        # Compute the error
+        if self._collided == 1:
+            error = -5 + discount * state_n - state_o
+        else:
+            error = discount * state_n - state_o
+
+        # Have the actor and critic learn
+        self._actor.learn(error)
+        self._critic.learn(error)
 
 
     def get_roll_params(self, max_speed=255):
         """
         Activate the actor and return the speed and heading for the next roll
+        
         :return: A tuple: (speed, heading)
         """
 
