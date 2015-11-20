@@ -48,6 +48,17 @@ class Sphero(sphero_driver):
         # And record the position
         self._collision_pos.add((data['X'], data['Y'], data['Z']))
 
-    def on_position_speed(self):
+    def on_position_speed(self, data):
+        """
+        This function is a callback for the streaming of position and speed information.
+        :param data: A dictionary containing all the requested information
+        :return: Nothing
+        """
+
+        # Simply assign the values to the corresponding members
+        self._x = data['ODOM_X']
+        self._y = data['ODOM_Y']
+        self._speed_x = data['VELOCITY_X']
+        self._speed_y = data['VELOCITY_Y']
 
     def on_power_notify(self):
