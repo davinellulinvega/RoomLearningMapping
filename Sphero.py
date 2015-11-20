@@ -28,12 +28,13 @@ class Sphero(sphero_driver):
         self._critic = Network.Network(3, [10, 10], 1)
 
         # Configure the collision detection and data streaming
-        self.config_collision_detection(0x01, (0xff / 7), 0x00, (0xff / 7), 0x00, 0x01, False)
-        # TODO: Replace with a data stream for odometer and speed only
-        self.set_all_data_strm(15, 1, 0, False)
+        self.config_collision_detect(0x01, (0xff / 7), 0x00, (0xff / 7), 0x00, 0x01, False)
+        self.set_data_strm(15, 1, 0, 0, sphero_driver.STRM_MASK2['VELOCITY_X'] | sphero_driver.STRM_MASK2['VELOCITY_Y'] | sphero_driver.STRM_MASK2['ODOM_X'] | sphero_driver.STRM_MASK2['ODOM_Y'], False)
+
+        # Set power notification as well (0x00: disable, 0x01: enable)
+        self.set_power_notify(0x01, False)
 
     def on_collision(self):
-
 
     def on_position(self):
 
