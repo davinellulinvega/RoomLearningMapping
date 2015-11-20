@@ -6,6 +6,7 @@ import Network
 from sphero_driver import sphero_driver
 import ast
 import math
+from pickle import Pickler
 
 
 class Sphero(sphero_driver.Sphero):
@@ -134,6 +135,24 @@ class Sphero(sphero_driver.Sphero):
                     self._collision_pos.add(line)
         except IOError:
             print("No previously recorded data on positions for collision")
+
+    def dump_brain(self):
+        """
+        Record the configuration of the actor and critic into a binary file.
+        :return: Nothing
+        """
+
+        # Open the file for writing in binary mode
+        with open("Config/actor.cfg", "wb") as cfg_file:
+            # Instantiate a pickler
+            pickle = Pickler(cfg_file)
+            # Dump the configuration
+            pickle.dump(self._actor)
+
+        # Repeat the operation for the critic
+        with open("Config/critic.cfg", "wb") as cfg_file:
+            pickle = Pickler(cfg_file)
+            pickle.dump(self._critic)
 
 
 if __name__ == "__main__":
