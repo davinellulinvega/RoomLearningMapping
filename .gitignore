@@ -4,3 +4,8 @@
 .idea/modules.xml
 .idea/RoomLearningMapping.iml
 .idea/workspace.xml
+Layer.pyc
+Network.pyc
+Neuron.pyc
+Sphero.pyc
+Synapse.pyc
