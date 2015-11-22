@@ -267,8 +267,9 @@ class Sphero(sphero_driver.Sphero):
         if self._collided == 1:
             punishment = -5
 
-        # Compute the reward
-        reward = self._path_length
+        # The path length is translated from centimeters to meters, then 5 meters are removed to push exploration and force the
+        # robot to move rather than idle on the same spot
+        reward = (self._path_length / 100) - 5
 
         # Compute the error
         error = (reward - punishment) + discount * state_n - state_o
