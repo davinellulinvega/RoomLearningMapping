@@ -266,6 +266,8 @@ class Sphero(sphero_driver.Sphero):
         # Compute the punishment
         if self._collided == 1:
             punishment = -5
+        else:
+            punishment = 0
 
         # The path length is translated from centimeters to meters, then 5 meters are removed to push exploration and force the
         # robot to move rather than idle on the same spot
