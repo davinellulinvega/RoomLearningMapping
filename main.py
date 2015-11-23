@@ -5,13 +5,13 @@ __author__ = 'davinellulinvega'
 import Sphero
 
 # Instantiate a Sphero object
-sphero = Sphero.Sphero(False, [5], [5])
+sphero = Sphero.Sphero(False, [10], [10])
 
 # Connect to the robot
 sphero.connect()
 
 # Configure the robot
-sphero.configure()
+sphero.configure(50, 20, 50, 20)
 
 # Start a second thread for processing async data
 sphero.start()
@@ -26,18 +26,18 @@ try:
         state_o = sphero.get_state_value()
 
         # Get the parameters for the next roll
-        speed, heading = sphero.get_roll_params(0xff)
+        speed, heading = sphero.get_roll_params(0xff / 2)
         # Roll according to the parameters
         sphero.roll(speed, heading, 0x01, False)  # The third parameter is the state: 0x00->breaking, 0x01->driving
-
-        # Check if the robot is still colliding with an object
-        sphero.check_collision_status(10)
 
         # Get the value of the new state
         state_n = sphero.get_state_value()
 
         # Have the actor and the critic learn
-        sphero.learn(state_n, state_o, 0.7, 0.001)
+        sphero.learn(state_n, state_o, 0.8, 0.001)
+
+        # Check if the robot is still colliding with an object
+        sphero.check_collision_status(50)
 
         # Query the power status
         power = sphero.get_power_status()

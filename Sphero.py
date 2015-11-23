@@ -54,7 +54,7 @@ class Sphero(sphero_driver.Sphero):
             self._actor = Network.Network(2, hid_act, 2)
             self._critic = Network.Network(2, hid_crit, 1)
 
-    def configure(self):
+    def configure(self, amp_x, speed_x, amp_y, speed_y):
         """
         Configure the the data streaming, collision detection and power notification
         :return: Nothing
@@ -63,8 +63,8 @@ class Sphero(sphero_driver.Sphero):
         # Check that the robot is connected before anything
         if self.is_connected:
             # Configure the collision detection and data streaming
-            self.config_collision_detect(0x01, (0xff / 7), 0x00, (0xff / 7), 0x00, 0x01, False)
-            self.set_data_strm(15, 1, 0, 0,
+            self.config_collision_detect(0x01, amp_x, speed_x, amp_y, speed_y, 0x01, False)
+            self.set_data_strm(50, 1, 0, 0,
                                sphero_driver.STRM_MASK2['VELOCITY_X'] | sphero_driver.STRM_MASK2['VELOCITY_Y'] |
                                sphero_driver.STRM_MASK2['ODOM_X'] | sphero_driver.STRM_MASK2['ODOM_Y'], False)
 
@@ -81,14 +81,17 @@ class Sphero(sphero_driver.Sphero):
 
     def on_collision(self, data):
         """
-        This function is a callback for the collision detected event and only changes the value of the collided member
-        And record the position of the collision for mapping purposes
+        This function is a callback for the collision detected event. It changes the value of the collided member
+        and the speed on both axis. And record the position of the collision for mapping purposes
         :param data: Information on the magnitude and speed of the collision on each axis
         :return: Nothing
         """
 
         # Simply set the collided member to True
         self._collided = 1
+        # Set the speed on both the x and y axis to 0
+        self._speed_x = 0
+        self._speed_y = 0
         # And record the position
         self._collision_pos.add((data['X'], data['Y'], data['Z']))
 
@@ -126,7 +129,7 @@ class Sphero(sphero_driver.Sphero):
         self._speed_y = data['VELOCITY_Y']
 
         # Compute the path length
-        self._path_length += math.sqrt((self._x - x_old)**2 + (self._y - y_old)**2)
+        self._path_length = math.sqrt((self._x - x_old)**2 + (self._y - y_old)**2)
 
     def on_power_notify(self, data):
         """
@@ -209,7 +212,7 @@ class Sphero(sphero_driver.Sphero):
 
         except IOError as error:
             # Display a message detailing the error
-            print("An error occurred while loading the actor and critic: Error {}: {}".format(error.errno, error.strerror))
+            print("No prevously recorded actor and/or critic configuration")
             # Return False to warn that something bad happened, leaving the actor and critic in an unknown state
             return False
 
@@ -265,14 +268,13 @@ class Sphero(sphero_driver.Sphero):
 
         # Compute the punishment
         if self._collided == 1:
-            punishment = 5
+            punishment = 1
         else:
             punishment = 0
 
-        # The path length is translated from centimeters to meters, then 5 meters are removed to push exploration
+        # The path length is translated from centimeters to meters, then 1 meters are removed to push exploration
         # and force the robot to move rather than idle on the same spot
-        #reward = (self._path_length / 100) - 5
-        reward = 0
+        reward = (self._path_length / 100) - 1
 
         # Compute the error
         error = (reward - punishment) + discount * state_n - state_o
