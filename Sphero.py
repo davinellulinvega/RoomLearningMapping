@@ -128,6 +128,8 @@ class Sphero(sphero_driver.Sphero):
         self._speed_x = data['VELOCITY_X']
         self._speed_y = data['VELOCITY_Y']
 
+        print(self._x, self._y)
+
         # Compute the path length
         self._path_length = math.sqrt((self._x - x_old)**2 + (self._y - y_old)**2)
 
@@ -274,7 +276,7 @@ class Sphero(sphero_driver.Sphero):
 
         # The path length is translated from centimeters to meters, then 1 meters are removed to push exploration
         # and force the robot to move rather than idle on the same spot
-        reward = (self._path_length / 100) - 1
+        reward = (self._path_length / 100)
 
         # Compute the error
         error = (reward - punishment) + discount * state_n - state_o

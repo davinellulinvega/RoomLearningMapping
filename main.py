@@ -5,7 +5,7 @@ __author__ = 'davinellulinvega'
 import Sphero
 
 # Instantiate a Sphero object
-sphero = Sphero.Sphero(False, [10], [10])
+sphero = Sphero.Sphero(True, [10], [10])
 
 # Connect to the robot
 sphero.connect()
@@ -33,8 +33,10 @@ try:
         # Get the value of the new state
         state_n = sphero.get_state_value()
 
+        print("States: (O, N) ({}, {})".format(state_o, state_n))
+
         # Have the actor and the critic learn
-        sphero.learn(state_n, state_o, 0.8, 0.001)
+        sphero.learn(state_n, state_o, 0.7, 0.001)
 
         # Check if the robot is still colliding with an object
         sphero.check_collision_status(100)
