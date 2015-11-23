@@ -10,3 +10,4 @@ Neuron.pyc
 Sphero.pyc
 Synapse.pyc
 sphero_driver.pyc
+Data/collision_position.dat
