@@ -37,7 +37,7 @@ try:
         sphero.learn(state_n, state_o, 0.8, 0.001)
 
         # Check if the robot is still colliding with an object
-        sphero.check_collision_status(50)
+        sphero.check_collision_status(100)
 
         # Query the power status
         power = sphero.get_power_status()
