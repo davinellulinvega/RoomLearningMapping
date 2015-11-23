@@ -5,7 +5,7 @@ __author__ = 'davinellulinvega'
 import Sphero
 
 # Instantiate a Sphero object
-sphero = Sphero.Sphero(False, [10, 10], [10, 10])
+sphero = Sphero.Sphero(False, [10], [10])
 
 # Connect to the robot
 sphero.connect()
@@ -37,7 +37,7 @@ try:
         state_n = sphero.get_state_value()
 
         # Have the actor and the critic learn
-        sphero.learn(state_n, state_o, 0.7)
+        sphero.learn(state_n, state_o, 0.7, 0.001)
 
         # Query the power status
         power = sphero.get_power_status()
