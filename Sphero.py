@@ -265,7 +265,7 @@ class Sphero(sphero_driver.Sphero):
 
         # Compute the punishment
         if self._collided == 1:
-            punishment = -5
+            punishment = 5
         else:
             punishment = 0
 
