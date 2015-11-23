@@ -271,7 +271,8 @@ class Sphero(sphero_driver.Sphero):
 
         # The path length is translated from centimeters to meters, then 5 meters are removed to push exploration
         # and force the robot to move rather than idle on the same spot
-        reward = (self._path_length / 100) - 5
+        #reward = (self._path_length / 100) - 5
+        reward = 0
 
         # Compute the error
         error = (reward - punishment) + discount * state_n - state_o
