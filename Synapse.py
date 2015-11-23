@@ -17,7 +17,6 @@ class Synapse:
         self.weight = uniform(-1, 1)
         # Keep a record of the previous delta, to compute the momentum
         self.prev_delta = 0
-        self.eta = 0.01  # 0.0001
         self.epsylon = 0.7
         # Check if neuron_in is an instance of Neuron
         if not (isinstance(neuron_in, Neuron.Neuron)):
@@ -34,11 +33,11 @@ class Synapse:
             # Else store the instance
             self.neuron_out = neuron_out
 
-    def update_weight(self):
+    def update_weight(self, learn_rate):
         """Define the procedure for updating the weight of the synapse"""
 
         # Compute the delta
-        delta = self.eta * self.neuron_out.error * self.neuron_in.output + self.epsylon * self.prev_delta
+        delta = learn_rate * self.neuron_out.error * self.neuron_in.output + self.epsylon * self.prev_delta
         # Compute the new weight
         self.weight += delta
         # Store the delta in the previous delta

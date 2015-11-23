@@ -55,13 +55,13 @@ class Neuron:
             # Else store the error value
             self.error = error
 
-    def update_weight(self):
+    def update_weight(self, learn_rate):
         """Define the procedure to update the weight of the input synapses"""
 
         # For each input synapse
         for syn in self.in_syn:
             # Ask the synapse to update its weight
-            syn.update_weight()
+            syn.update_weight(learn_rate)
             # Normalize the synaptic weight
             # self.normalize_weight()
 

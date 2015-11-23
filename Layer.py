@@ -38,13 +38,13 @@ class Layer:
                     # Add the synapse in the in list
                     tmp_neuron.add_in_syn(tmp_syn)
 
-    def update_weight(self):
+    def update_weight(self, learn_rate):
         """Define the procedure to update the weights of all incoming synapses"""
 
         # For each neuron in the layer
         for neuron in self.neurons:
             # Ask the neuron to update the incoming synaptic weight
-            neuron.update_weight()
+            neuron.update_weight(learn_rate)
 
     def update_error(self, error=None):
         """Define the procedure to update the weights of all neurons in the layer"""

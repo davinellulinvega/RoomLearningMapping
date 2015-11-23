@@ -254,7 +254,7 @@ class Sphero(sphero_driver.Sphero):
         # Finally return the state's value
         return output[0]
 
-    def learn(self, state_n, state_o, discount):
+    def learn(self, state_n, state_o, discount, learn_rate):
         """
         Compute the error depending on the collision status and have the actor and critic learn
         :param state_n: the value of the new state
@@ -269,16 +269,16 @@ class Sphero(sphero_driver.Sphero):
         else:
             punishment = 0
 
-        # The path length is translated from centimeters to meters, then 5 meters are removed to push exploration and force the
-        # robot to move rather than idle on the same spot
+        # The path length is translated from centimeters to meters, then 5 meters are removed to push exploration
+        # and force the robot to move rather than idle on the same spot
         reward = (self._path_length / 100) - 5
 
         # Compute the error
         error = (reward - punishment) + discount * state_n - state_o
 
         # Have the actor and critic learn
-        self._actor.learn([error, error])
-        self._critic.learn([error])
+        self._actor.learn([error, error], learn_rate)
+        self._critic.learn([error], learn_rate)
 
     def get_roll_params(self, max_speed=255):
         """
