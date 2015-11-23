@@ -51,8 +51,8 @@ class Sphero(sphero_driver.Sphero):
 
         # If not required or if reading the configuration files failed
         if not (reload_brain and loaded):
-            self._actor = Network.Network(3, hid_act, 2)
-            self._critic = Network.Network(3, hid_crit, 1)
+            self._actor = Network.Network(2, hid_act, 2)
+            self._critic = Network.Network(2, hid_crit, 1)
 
     def configure(self):
         """
@@ -248,7 +248,7 @@ class Sphero(sphero_driver.Sphero):
         """
 
         # Activate the critic
-        self._critic.activate([self._x, self._y, self._collided])
+        self._critic.activate([self._x, self._y])
         # Get the output
         output = self._critic.get_output()
         # Finally return the state's value
@@ -288,7 +288,7 @@ class Sphero(sphero_driver.Sphero):
         """
 
         # Activate the actor
-        self._actor.activate([self._x, self._y, self._collided])
+        self._actor.activate([self._x, self._y])
 
         # Get the parameters for the roll
         outputs = self._actor.get_output()  # outputs are in the range [-1; 1]
