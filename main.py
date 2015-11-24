@@ -27,6 +27,9 @@ try:
 
         # Get the parameters for the next roll
         speed, heading = sphero.get_roll_params(0xff / 2)
+
+        print("Action: (S, H) ({}, {})".format(speed, heading))
+
         # Roll according to the parameters
         sphero.roll(speed, heading, 0x01, False)  # The third parameter is the state: 0x00->breaking, 0x01->driving
 
