@@ -54,7 +54,7 @@ class Sphero(sphero_driver.Sphero):
             self._actor = Network.Network(2, hid_act, 2)
             self._critic = Network.Network(2, hid_crit, 1)
 
-    def configure(self, amp_x, speed_x, amp_y, speed_y):
+    def initialize(self):
         """
         Configure the the data streaming, collision detection and power notification
         :return: Nothing
@@ -63,8 +63,8 @@ class Sphero(sphero_driver.Sphero):
         # Check that the robot is connected before anything
         if self.is_connected:
             # Configure the collision detection and data streaming
-            self.config_collision_detect(0x01, amp_x, speed_x, amp_y, speed_y, 0x01, False)
-            self.set_data_strm(50, 1, 0, 0,
+            self.config_collision()
+            self.set_data_strm(40, 1, 0, 0,
                                sphero_driver.STRM_MASK2['VELOCITY_X'] | sphero_driver.STRM_MASK2['VELOCITY_Y'] |
                                sphero_driver.STRM_MASK2['ODOM_X'] | sphero_driver.STRM_MASK2['ODOM_Y'], False)
 
@@ -78,6 +78,35 @@ class Sphero(sphero_driver.Sphero):
 
             # Switch the back led on
             self.set_back_led(255, False)
+
+    def config_collision(self):
+        """
+        A function to dynamically adapt the configuration of the collision detection
+        :return: Nothing
+        """
+
+        # If the robot is bellow a speed of 10
+        if self._speed_x < 30:
+            # Assign some fix values that should not trigger a collision just by moving around
+            amp_x = 10
+            speed_x = 20
+        else:
+            # If the speed is high enough we assign dynamic values based on the speed
+            speed_x = int(self._speed_x * 0.3)
+            amp_x = int(self._speed_x * 0.2)
+
+        # The same processing applies on the Y axis
+        if self._speed_y < 30:
+            # Assign some fix values that should not trigger a collision just by moving around
+            amp_y = 10
+            speed_y = 20
+        else:
+            # If the speed is high enough we assign dynamic values based on the speed
+            speed_y = int(self._speed_y * 0.3)
+            amp_y = int(self._speed_y * 0.2)
+
+        # Finally send the configuration to the robot
+        self.config_collision_detect(0x01, amp_x, speed_x, amp_y, speed_y, 0x01, False)
 
     def on_collision(self, data):
         """

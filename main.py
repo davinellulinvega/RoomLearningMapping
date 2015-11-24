@@ -11,7 +11,7 @@ sphero = Sphero.Sphero(True, [10], [10])
 sphero.connect()
 
 # Configure the robot
-sphero.configure(50, 20, 50, 20)
+sphero.initialize()
 
 # Start a second thread for processing async data
 sphero.start()
