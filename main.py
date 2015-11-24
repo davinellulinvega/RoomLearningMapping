@@ -38,8 +38,8 @@ try:
         # Have the actor and the critic learn
         sphero.learn(state_n, state_o, 0.7, 0.001)
 
-        # Check if the robot is still colliding with an object
-        sphero.check_collision_status(100)
+        # Reset the collision status
+        sphero.reset_collision()
 
         # Query the power status
         power = sphero.get_power_status()

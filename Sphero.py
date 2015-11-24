@@ -34,7 +34,7 @@ class Sphero(sphero_driver.Sphero):
         self._speed_x = 0
         self._speed_y = 0
         self._power = 2
-        self._collided = -1  # False = -1 and True = 1
+        self._collided = False
         self._collision_pos = set()
         self._path_length = 0
 
@@ -88,28 +88,21 @@ class Sphero(sphero_driver.Sphero):
         """
 
         # Simply set the collided member to True
-        self._collided = 1
+        self._collided = True
         # Set the speed on both the x and y axis to 0
         self._speed_x = 0
         self._speed_y = 0
         # And record the position
         self._collision_pos.add((data['X'], data['Y'], data['Z']))
 
-    def check_collision_status(self, speed_thres):
+    def reset_collision(self):
         """
-        If the robot collided with an object of large proportions, this function checks that the robot is not in contact
-        with the object any more, relying on the speed of the robot.
-        :param speed_thres: an integer between 0 and 255. If the overall speed of the robot is greater than this
-        threshold, it is considered not in contact with an object any more.
+        Simply reset the collision status to False
         :return: Nothing
         """
 
-        # Compute the overall speed of the robot
-        speed = math.sqrt((self._speed_x**2 + self._speed_y**2))
-
-        # Check if the robot previously collided with something and has a speed over the threshold
-        if self._collided == 1 and speed > speed_thres:
-            self._collided = -1
+        # Assign False to the _collided member
+        self._collided = False
 
     def on_position_speed(self, data):
         """
@@ -269,7 +262,7 @@ class Sphero(sphero_driver.Sphero):
         """
 
         # Compute the punishment
-        if self._collided == 1:
+        if self._collided:
             punishment = 1
         else:
             punishment = 0
