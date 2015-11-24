@@ -289,9 +289,9 @@ class Sphero(sphero_driver.Sphero):
         self._actor.activate([self._x, self._y])
 
         # Get the parameters for the roll
-        outputs = self._actor.get_output()  # outputs are in the range [-1; 1]
-        speed = (max_speed / 2) + (outputs[0] * (max_speed / 2))  # With output=1 -> max_speed, with output=-1 -> 0
-        heading = (359 / 2) + (outputs[1] * (359/2))  # 359 is the maximum heading possible
+        outputs = self._actor.get_output()  # outputs are in the range [0; 1]
+        speed = outputs[0] * max_speed  # With output=1 -> max_speed, with output=0 -> 0
+        heading = outputs[1] * 359  # 359 is the maximum heading possible
 
         # Return the formatted parameters
         return int(speed), int(heading)
