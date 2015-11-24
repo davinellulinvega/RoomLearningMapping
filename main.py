@@ -26,7 +26,7 @@ try:
         state_o = sphero.get_state_value()
 
         # Get the parameters for the next roll
-        speed, heading = sphero.get_roll_params(0xff / 2)
+        speed, heading = sphero.get_roll_params(0xff)
 
         print("Action: (S, H) ({}, {})".format(speed, heading))
 

@@ -150,8 +150,6 @@ class Sphero(sphero_driver.Sphero):
         self._speed_x = data['VELOCITY_X']
         self._speed_y = data['VELOCITY_Y']
 
-        print(self._x, self._y)
-
         # Compute the path length
         self._path_length = math.sqrt((self._x - x_old)**2 + (self._y - y_old)**2)
 
