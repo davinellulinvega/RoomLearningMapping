@@ -2,7 +2,7 @@
 __author__ = 'davinellulinvega'
 
 # Import the required packages
-from math import tanh
+from math import exp
 import Synapse
 
 
@@ -45,12 +45,15 @@ class Neuron:
 
         # If no error is provided
         if error is None:
+            sum_in = 0
+            for syn in self.in_syn:
+                sum_in += syn.get_weighted_input()
             sum_err = 0
             # For each out synapse
             for syn in self.out_syn:
                 sum_err += syn.neuron_out.error * syn.weight
             # Compute the error
-            self.error = sum_err * (1 - self.output ** 2)
+            self.error = sum_err * (-2 * sum_in * self.output)
         else:
             # Else store the error value
             self.error = error
@@ -99,4 +102,4 @@ class Neuron:
             sum_in += syn.get_weighted_input()
 
         # Apply the activation function and assign the result to the output
-        self.output = tanh(sum_in)
+        self.output = exp(-(sum_in**2))
