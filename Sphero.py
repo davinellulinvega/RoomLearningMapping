@@ -143,18 +143,11 @@ class Sphero(sphero_driver.Sphero):
         :return: Nothing
         """
 
-        # Record the old position
-        x_old = self._x
-        y_old = self._y
-
         # Simply assign the values to the corresponding members
         self._x = data['ODOM_X'] / 100
         self._y = data['ODOM_Y'] / 100
         self._speed_x = data['VELOCITY_X']
         self._speed_y = data['VELOCITY_Y']
-
-        # Compute the path length
-        self._path_length = math.sqrt((self._x - x_old)**2 + (self._y - y_old)**2)
 
     def on_power_notify(self, data):
         """
@@ -293,16 +286,12 @@ class Sphero(sphero_driver.Sphero):
 
         # Compute the punishment
         if self._collided:
-            punishment = 0.5
+            punishment = -1
         else:
             punishment = 0
 
-        # The path length is translated from centimeters to meters, then 50 centimeters are removed to push exploration
-        # and force the robot to move rather than idle on the same spot
-        reward = self._path_length - 0.5
-
         # Compute the error
-        error = (reward - punishment) + discount * state_n - state_o
+        error = punishment + discount * state_n - state_o
 
         # Have the actor and critic learn
         self._actor.learn([error, error], learn_rate)
