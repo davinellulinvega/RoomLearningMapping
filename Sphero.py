@@ -126,7 +126,8 @@ class Sphero(sphero_driver.Sphero):
 
     def reset_collision(self, speed_x=30, speed_y=30):
         """
-        Check if the robot is still in contact with the object through speed measurments and reset the collision state accordingly
+        Check if the robot is still in contact with the object through speed measurements and reset the collision state
+        accordingly
         :return: Nothing
         """
 
