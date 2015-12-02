@@ -5,7 +5,7 @@ __author__ = 'davinellulinvega'
 import Sphero
 
 # Instantiate a Sphero object
-sphero = Sphero.Sphero(True, [10], [10])
+sphero = Sphero.Sphero(False, [10], [10])
 
 # Connect to the robot
 sphero.connect()
