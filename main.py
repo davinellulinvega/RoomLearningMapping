@@ -34,8 +34,6 @@ try:
         # Get the value of the new state
         state_n = sphero.get_state_value()
 
-        print("States: (O, N) ({}, {})".format(state_o, state_n))
-
         # Have the actor and the critic learn
         sphero.learn(state_n, state_o, 0.7, 0.001)
 

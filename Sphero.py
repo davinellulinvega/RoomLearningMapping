@@ -132,7 +132,7 @@ class Sphero(sphero_driver.Sphero):
         """
 
         # Check the speed of the robot on both axis
-        if self._speed_x > speed_x and self._speed_y > speed_y:
+        if abs(self._speed_x) > speed_x and abs(self._speed_y) > speed_y:
             # Assign False to the _collided member
             self._collided = False
 
@@ -148,8 +148,8 @@ class Sphero(sphero_driver.Sphero):
         y_old = self._y
 
         # Simply assign the values to the corresponding members
-        self._x = data['ODOM_X']
-        self._y = data['ODOM_Y']
+        self._x = data['ODOM_X'] / 100
+        self._y = data['ODOM_Y'] / 100
         self._speed_x = data['VELOCITY_X']
         self._speed_y = data['VELOCITY_Y']
 
@@ -293,13 +293,13 @@ class Sphero(sphero_driver.Sphero):
 
         # Compute the punishment
         if self._collided:
-            punishment = 1
+            punishment = 0.5
         else:
             punishment = 0
 
         # The path length is translated from centimeters to meters, then 50 centimeters are removed to push exploration
         # and force the robot to move rather than idle on the same spot
-        reward = (self._path_length / 100) - 0.5
+        reward = self._path_length - 0.5
 
         # Compute the error
         error = (reward - punishment) + discount * state_n - state_o
