@@ -66,7 +66,7 @@ class Neuron:
             # Ask the synapse to update its weight
             syn.update_weight(learn_rate)
             # Normalize the synaptic weight
-            # self.normalize_weight()
+            self.normalize_weight()
 
     def normalize_weight(self):
         """Normalize the weight, while keeping the dispersion ratio"""
