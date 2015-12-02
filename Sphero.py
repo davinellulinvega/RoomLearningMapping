@@ -124,14 +124,16 @@ class Sphero(sphero_driver.Sphero):
         # And record the position
         self._collision_pos.add((data['X'], data['Y'], data['Z']))
 
-    def reset_collision(self):
+    def reset_collision(self, speed_x=30, speed_y=30):
         """
-        Simply reset the collision status to False
+        Check if the robot is still in contact with the object through speed measurments and reset the collision state accordingly
         :return: Nothing
         """
 
-        # Assign False to the _collided member
-        self._collided = False
+        # Check the speed of the robot on both axis
+        if self._speed_x > speed_x and self._speed_y > speed_y:
+            # Assign False to the _collided member
+            self._collided = False
 
     def on_position_speed(self, data):
         """
